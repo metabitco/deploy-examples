@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
-DEPLOY_BASE_DIRECTORY=/home/ubuntu/MY_SITE_NAME
-DEPLOY_DIRECTORY="$DEPLOY_BASE_DIRECTORY"/releases
+set -x
+DEPLOY_BASE_DIRECTORY=/home/forge/changelager.app
 DEPLOY_NAME=$(date +"%Y%m%d%H%M%S")
-GIT_REPO=git@github.com:USER/REPO.git
+DEPLOY_DIRECTORY="$DEPLOY_BASE_DIRECTORY"/releases/"$DEPLOY_NAME"
+GIT_REPO=git@github.com:austinkregel/changelager.git
+RELEASE_DIRECTORY="$DEPLOY_BASE_DIRECTORY"/releases
 
 # Here we want to create a temp file with all our important environment variables. Essentially
 # I'm using this file as a way to keep state throughout this deploy.
-cat <<EOF > .deploy-laravel-env
+cat <<EOF > .deploy-changelager-env
 export DEPLOY_BASE_DIRECTORY="$DEPLOY_BASE_DIRECTORY"
 export DEPLOY_DIRECTORY="$DEPLOY_DIRECTORY"
 export DEPLOY_NAME="$DEPLOY_NAME"
 export GIT_REPO="$GIT_REPO"
+export RELEASE_DIRECTORY="$RELEASE_DIRECTORY"
 EOF
 
-cd $DEPLOY_DIRECTORY
+cd "$RELEASE_DIRECTORY"
 
 # You'll see this pattern of `2>&1` across several scripts as sometimes programs emit things to stderr, and that
 # makes the node-ssh (specifically ssh2) package angry. So the only reason we're redirecting all of stderr to stdout
